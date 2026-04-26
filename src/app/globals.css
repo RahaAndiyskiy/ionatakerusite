@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #000000;
+  --accent: #9a9a8e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-geist-sans);
+}
+
+/* Local Kiona font: place files in public/fonts */
+@font-face {
+  font-family: "Kiona";
+  src: url("/fonts/Kiona-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kiona";
+  src: url("/fonts/Kiona-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --font-kiona: "Kiona", var(--font-sans), system-ui, sans-serif;
+}
+
+.font-kiona {
+  font-family: var(--font-kiona);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-kiona), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  border: none;
+  background-color: rgba(107, 30, 35, 0.);
+  border-radius: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
+  z-index: 9999;
+}
+
+.cursor--active {
+  transform: translate(-50%, -50%) scale(2);
+  background-color: rgba(107, 30, 35, 0.2);
+}
