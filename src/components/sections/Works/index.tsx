@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { Share_Tech_Mono } from 'next/font/google';
+import { useEffect, useRef, useState } from 'react';
+import { Space_Mono } from 'next/font/google';
+import GlitchText from '@/components/ui/GlitchText';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
 import { useSetWorksActive } from '@/context/WorkSectionContext';
 
-const shareTechMono = Share_Tech_Mono({
+const shareTechMono = Space_Mono({
   subsets: ['latin'],
   weight: ['400'],
   display: 'swap',
@@ -17,12 +18,18 @@ export default function Works() {
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const animationFrameRef = useRef<number | null>(null);
   const setWorksActive = useSetWorksActive();
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   const works = [
-    { id: '01', title: 'OBISIDIAN', type: 'WEB DESIGN', image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80' },
-    { id: '02', title: 'SOLEIL', type: 'BRAND SYSTEM', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80' },
-    { id: '03', title: 'AETHER', type: 'INTERFACE', image: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=1200&q=80' },
-    { id: '04', title: 'VORTEX', type: 'DIGITAL CAMPAIGN', image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80' },
+    { id: '01', title: 'OBISIDIAN', type: 'WEB DESIGN', image: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80' },
+    { id: '02', title: 'SOLEIL', type: 'BRAND SYSTEM', image: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80' },
+    { id: '03', title: 'AETHER', type: 'INTERFACE', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80' },
+    { id: '04', title: 'VORTEX', type: 'DIGITAL CAMPAIGN', image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80' },
+  ];
+
+  const sectionCopyGroups = [
+    ['A focused selection', 'of digital work.'],
+    ['Built with intent.', 'Driven by precision.'],
   ];
 
   useEffect(() => {
@@ -197,13 +204,32 @@ export default function Works() {
 
     const cardElements = rowRefs.current[0]?.querySelectorAll('article');
     if (cardElements && cardElements.length) {
-      gsap.set(cardElements, { autoAlpha: 0, filter: 'blur(8px)' });
+      gsap.set(cardElements, { autoAlpha: 0.05, filter: 'blur(8px)' });
       gsap.to(cardElements, {
         autoAlpha: 1,
         filter: 'blur(0px)',
         ease: 'none',
         stagger: {
           each: 0.18,
+          amount: 0.4,
+        },
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+    }
+
+    const copyWords = section.querySelectorAll('.works-copy .word');
+    if (copyWords.length) {
+      gsap.set(copyWords, { color: 'rgba(255, 243, 230, 0.05)' });
+      gsap.to(copyWords, {
+        color: 'rgba(255, 243, 230, 1)',
+        ease: 'none',
+        stagger: {
+          each: 0.06,
           amount: 0.4,
         },
         scrollTrigger: {
@@ -247,10 +273,34 @@ export default function Works() {
       />
 
       <div className="relative z-10 px-6 py-24 md:px-16 md:py-32">
-        <div className="max-w-screen-xl">
-          <h2 className="text-[clamp(2.5rem,6vw,5.5rem)] font-light uppercase tracking-[-0.04em] leading-tight text-[#FFF3E6]">
-            SELECTED<br />WORK
-          </h2>
+        <div className="relative">
+          <div className="max-w-screen-xl">
+            <h2 className="max-w-xl text-[clamp(2.5rem,6vw,5.5rem)] font-light uppercase tracking-[-0.04em] leading-tight text-[#FFF3E6]">
+              SELECTED<br />WORK
+            </h2>
+          </div>
+
+          <div className="mt-16 max-w-md text-base leading-9 text-[#FFF3E6]/20 lg:absolute lg:right-18 lg:top-0 lg:text-left works-copy">
+            <div className="space-y-7">
+              {sectionCopyGroups.map((group, groupIndex) => (
+                <div key={groupIndex} className="space-y-1">
+                  {group.map((line, lineIndex) => (
+                    <p key={lineIndex} className="flex flex-wrap justify-start gap-x-2 gap-y-2 text-[1.1rem] leading-[1.45]">
+                      {line.split(' ').map((word, wordIndex) => (
+                        <span
+                          key={wordIndex}
+                          className="word inline-block font-medium"
+                          style={{ color: 'rgba(255, 243, 230, 0.05)' }}
+                        >
+                          {word}
+                        </span>
+                      ))}
+                    </p>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="mt-30">
@@ -258,13 +308,17 @@ export default function Works() {
             ref={(el) => { rowRefs.current[0] = el; }}
             className="grid gap-5 grid-cols-1 md:grid-cols-4"
           >
-            {works.map((project) => (
+            {works.map((project, index) => (
               <article
                 key={project.id}
                 data-cursor="invert"
                 className="group relative overflow-hidden bg-transparent transition-transform duration-300 ease-out will-change-transform hover:scale-[1.01]"
               >
-                <div className="relative h-[320px] overflow-hidden">
+                <div
+                  className="relative h-[320px] overflow-hidden"
+                  onMouseEnter={() => setHoveredCard(index)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                >
                   <img
                     src={project.image}
                     alt={project.title}
@@ -274,8 +328,15 @@ export default function Works() {
                 </div>
 
                 <div className={`mt-4 text-[0.72rem] uppercase tracking-[0.3em] leading-[1.2] text-white/75 ${shareTechMono.className}`}>
-                  <span className="text-[#d8d8c5] font-semibold">&gt; {project.id}</span>
-                  <span className="mx-3 text-white/90">{project.title}</span>
+                  <span className="text-[#f4f4e6] font-semibold">&gt; {project.id}</span>
+                  <GlitchText
+                    text={project.title}
+                    className="mx-3 text-white/90"
+                    duration={35}
+                    iterations={6}
+                    keepPlayingOnLeave={false}
+                    hovered={hoveredCard === index}
+                  />
                   <span className="text-[#b0b0a0]">// {project.type}</span>
                 </div>
               </article>
