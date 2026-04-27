@@ -17,7 +17,7 @@ export default function useHoverTone(audioSrc: string = DEFAULT_AUDIO_SRC) {
     audioRef.current = null;
   }, [safeAudioSrc]);
 
-  const getBaseAudio = () => {
+  const getBaseAudio = useCallback(() => {
     if (typeof window === 'undefined') return null;
     if (!audioRef.current) {
       const audio = new Audio(safeAudioSrc);
@@ -25,7 +25,7 @@ export default function useHoverTone(audioSrc: string = DEFAULT_AUDIO_SRC) {
       audioRef.current = audio;
     }
     return audioRef.current;
-  };
+  }, [safeAudioSrc]);
 
   return useCallback(() => {
     if (muted || typeof window === 'undefined') return;
@@ -40,5 +40,5 @@ export default function useHoverTone(audioSrc: string = DEFAULT_AUDIO_SRC) {
     void clone.play().catch(() => {
       // Ignore blocked autoplay on browsers until a user gesture is available.
     });
-  }, [muted, safeAudioSrc]);
+  }, [muted, getBaseAudio]);
 }

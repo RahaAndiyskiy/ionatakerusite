@@ -61,7 +61,7 @@ export default function CTAButton({
   return (
     <button
       type="button"
-      onClick={(event) => {
+      onClick={() => {
         playClickTone();
         onClick?.();
       }}

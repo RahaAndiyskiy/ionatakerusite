@@ -27,8 +27,6 @@ export default function Hero() {
   const BASE_X = 0;   // двигаешь тут композицию
   const BASE_Y = 60;
 
-  const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
-
   // 🫀 лёгкое "дыхание"
   useEffect(() => {
     if (!bgRef.current) return;
@@ -161,11 +159,12 @@ export default function Hero() {
       if (!frame) frame = requestAnimationFrame(update);
     };
 
-    sectionRef.current.addEventListener('pointermove', handleMove);
-    sectionRef.current.addEventListener('pointerleave', reset);
+    const section = sectionRef.current;
+    section?.addEventListener('pointermove', handleMove);
+    section?.addEventListener('pointerleave', reset);
 
     const st = ScrollTrigger.create({
-      trigger: sectionRef.current,
+      trigger: section,
       start: 'top top',
       end: '+=100%',
       scrub: true,
@@ -195,8 +194,8 @@ export default function Hero() {
 
     return () => {
       st.kill();
-      sectionRef.current?.removeEventListener('pointermove', handleMove);
-      sectionRef.current?.removeEventListener('pointerleave', reset);
+      section?.removeEventListener('pointermove', handleMove);
+      section?.removeEventListener('pointerleave', reset);
       if (frame) cancelAnimationFrame(frame);
     };
   }, []);

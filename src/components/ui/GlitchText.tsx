@@ -39,10 +39,10 @@ export default function GlitchText({
   const autoPlayTimer = useRef<number | null>(null);
   const [isSwapped, setIsSwapped] = useState(false);
 
-  const randomChar = (fast = false) => {
+  const randomChar = useCallback((fast = false) => {
     const pool = fast ? FAST_GLITCH_CHARS : chars;
     return pool[Math.floor(Math.random() * pool.length)];
-  };
+  }, [chars]);
 
   const clearAll = useCallback(() => {
     activeTimers.current.forEach(clearTimeout);
@@ -67,7 +67,7 @@ export default function GlitchText({
     const spans = Array.from(
       containerRef.current.querySelectorAll<HTMLSpanElement>('[data-char]')
     );
-    let originalChars = spans.map(s => s.getAttribute('data-char') ?? '');
+    const originalChars = spans.map(s => s.getAttribute('data-char') ?? '');
     const targetChars = isSwapped ? text.split('') : swapText?.split('') ?? originalChars;
     const shouldSwap = swapText != null && targetChars.length === spans.length;
     const runThroughLeave = keepPlayingOnLeave;
@@ -111,7 +111,7 @@ export default function GlitchText({
       isAnimatingRef.current = false;
     }, maxRestoreAt + 30);
     activeTimers.current.push(endTimer);
-  }, [clearAll, duration, iterations, isSwapped, keepPlayingOnLeave, onGlitchEnd, playOnChange, swapText, text]);
+  }, [clearAll, duration, iterations, isSwapped, keepPlayingOnLeave, onGlitchEnd, playOnChange, randomChar, swapText, text]);
 
   const handleMouseEnter = useCallback(() => {
     isHovered.current = true;
@@ -140,10 +140,6 @@ export default function GlitchText({
       }
     };
   }, [autoPlayInterval, startGlitch]);
-
-  useEffect(() => {
-    setIsSwapped(false);
-  }, [text, swapText]);
 
   useEffect(() => {
     if (!playOnChange) return;
