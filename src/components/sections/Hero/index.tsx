@@ -1,10 +1,10 @@
 'use client';
 
+import Link from 'next/link';
 import { useRef, useEffect } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
-import CustomButton1 from '@/components/ui/CustomButton1';
-import CustomButtonAbout from '@/components/ui/CustomButtonAbout';
+import useHoverTone from '@/hooks/useHoverTone';
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -17,6 +17,9 @@ export default function Hero() {
   const ctaRef = useRef<HTMLDivElement>(null);
 
   const newTitleContainerRef = useRef<HTMLDivElement>(null);
+
+  const playHoverTone = useHoverTone('/sounds/hover 1.wav');
+  const playClickTone = useHoverTone('/sounds/Click 1.wav');
 
   const breathingTlRef = useRef<gsap.core.Timeline | null>(null);
 
@@ -268,15 +271,32 @@ export default function Hero() {
             Art direction & visual design
           </p>
 
-          <div ref={ctaRef}>
-            <CustomButton1 label="VIEW PROJECTS" href="#work" />
+          <div className="flex flex-col gap-4">
+            <Link
+              href="/#work"
+              className="group h-10 flex items-center overflow-hidden text-xs font-kiona tracking-[0.2em] uppercase border border-black/70 hover:border-black transition-colors px-6 relative w-fit"
+              style={{ color: '#6B1E23' }}
+              onMouseEnter={playHoverTone}
+              onMouseLeave={playHoverTone}
+              onPointerDown={playClickTone}
+            >
+              <span className="transition-transform duration-[400ms] ease-in-out group-hover:translate-x-[1.8em]">
+                WORS
+              </span>
+              <span className="ml-2 transition-transform duration-[400ms] ease-in-out group-hover:translate-x-[400%]" aria-hidden="true">
+                →
+              </span>
+              <span className="absolute left-6 transition-transform duration-[400ms] ease-in-out -translate-x-[400%] group-hover:translate-x-0" aria-hidden="true">
+                →
+              </span>
+            </Link>
           </div>
         </div>
       </div>
 
       <div
         ref={newTitleContainerRef}
-        className="absolute bottom-24 md:bottom-40 right-6 md:right-16 z-20 max-w-[65vw] pointer-events-none"
+        className="absolute bottom-24 md:bottom-40 right-6 md:right-16 z-20 max-w-[65vw]"
       >
         <div className="overflow-hidden">
           <h1
@@ -311,8 +331,25 @@ export default function Hero() {
             Art direction & visual design
           </p>
 
-          <div className="flex justify-end">
-            <CustomButtonAbout label="VIEW PROJECTS" href="#work" />
+          <div className="ml-auto w-fit">
+            <Link
+              href="/#about"
+              className="group h-10 flex items-center overflow-hidden text-xs font-kiona tracking-[0.2em] uppercase border border-black/70 hover:border-black transition-colors px-10 relative"
+              style={{ color: '#6B1E23' }}
+              onMouseEnter={playHoverTone}
+              onMouseLeave={playHoverTone}
+              onPointerDown={playClickTone}
+            >
+              <span className="absolute left-8 transition-transform duration-[400ms] ease-in-out translate-x-0 group-hover:-translate-x-[400%]" aria-hidden="true">
+                ←
+              </span>
+              <span className="ml-4 transition-transform duration-[400ms] ease-in-out group-hover:-translate-x-[1.8em]">
+                ABOUT ME
+              </span>
+              <span className="absolute right-8 transition-transform duration-[400ms] ease-in-out translate-x-[400%] group-hover:translate-x-0" aria-hidden="true">
+                ←
+              </span>
+            </Link>
           </div>
         </div>
       </div>
