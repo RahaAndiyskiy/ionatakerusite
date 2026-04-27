@@ -1,8 +1,15 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { Share_Tech_Mono } from 'next/font/google';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
 import { useSetWorksActive } from '@/context/WorkSectionContext';
+
+const shareTechMono = Share_Tech_Mono({
+  subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap',
+});
 
 export default function Works() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -178,7 +185,7 @@ export default function Works() {
 
     const visibilityObserver = new IntersectionObserver(
       ([entry]) => {
-        updateWorksActive(entry.isIntersecting && entry.intersectionRatio > 0.05);
+        updateWorksActive(entry.isIntersecting && entry.intersectionRatio > 0.4);
       },
       {
         root: null,
@@ -188,19 +195,23 @@ export default function Works() {
     );
     visibilityObserver.observe(section);
 
-    if (rowRefs.current.length) {
-      gsap.from(rowRefs.current.filter(Boolean), {
+    const cardElements = rowRefs.current[0]?.querySelectorAll('article');
+    if (cardElements && cardElements.length) {
+      gsap.set(cardElements, { autoAlpha: 0, filter: 'blur(8px)' });
+      gsap.to(cardElements, {
+        autoAlpha: 1,
+        filter: 'blur(0px)',
+        ease: 'none',
+        stagger: {
+          each: 0.18,
+          amount: 0.4,
+        },
         scrollTrigger: {
           trigger: section,
-          start: 'top bottom',
-          end: 'top center',
-          toggleActions: 'play none none none',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
         },
-        opacity: 0,
-        x: 60,
-        duration: 0.75,
-        ease: 'power2.out',
-        stagger: 0.18,
       });
     }
 
@@ -237,40 +248,39 @@ export default function Works() {
 
       <div className="relative z-10 px-6 py-24 md:px-16 md:py-32">
         <div className="max-w-screen-xl">
-          <h2 className="text-[clamp(2.5rem,6vw,5.5rem)] font-light uppercase tracking-[-0.04em] text-[#FFF3E6]">
-            SELECTED WORK
+          <h2 className="text-[clamp(2.5rem,6vw,5.5rem)] font-light uppercase tracking-[-0.04em] leading-tight text-[#FFF3E6]">
+            SELECTED<br />WORK
           </h2>
         </div>
 
-        <div className="mt-14 space-y-5">
-          { [works.slice(0, 2), works.slice(2, 4)].map((row, rowIndex) => (
-            <div
-              key={rowIndex}
-              ref={(el) => { rowRefs.current[rowIndex] = el; }}
-              className="grid gap-5 sm:grid-cols-2"
-            >
-              {row.map((project) => (
-                <article
-                  key={project.id}
-                  className="group overflow-hidden bg-transparent transition-transform duration-300 ease-out will-change-transform hover:scale-[1.03]"
-                >
-                  <div className="h-[320px] overflow-hidden">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
+        <div className="mt-30">
+          <div
+            ref={(el) => { rowRefs.current[0] = el; }}
+            className="grid gap-5 grid-cols-1 md:grid-cols-4"
+          >
+            {works.map((project) => (
+              <article
+                key={project.id}
+                data-cursor="invert"
+                className="group relative overflow-hidden bg-transparent transition-transform duration-300 ease-out will-change-transform hover:scale-[1.01]"
+              >
+                <div className="relative h-[320px] overflow-hidden">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="h-full w-full object-cover filter grayscale transition-all duration-500 ease-out group-hover:grayscale-0"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-black/10" />
+                </div>
 
-                  <div className="mt-4 text-sm uppercase tracking-[0.22em] text-white/80">
-                    <span className="text-white font-semibold">{project.id}</span>
-                    <span className="mx-3 text-white">{project.title}</span>
-                    <span className="text-white/50">/ {project.type}</span>
-                  </div>
-                </article>
-              ))}
-            </div>
-          ))}
+                <div className={`mt-4 text-[0.72rem] uppercase tracking-[0.3em] leading-[1.2] text-white/75 ${shareTechMono.className}`}>
+                  <span className="text-[#d8d8c5] font-semibold">&gt; {project.id}</span>
+                  <span className="mx-3 text-white/90">{project.title}</span>
+                  <span className="text-[#b0b0a0]">// {project.type}</span>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
