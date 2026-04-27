@@ -17,6 +17,7 @@ interface GlitchTextProps {
   autoPlayInterval?: number;
   onGlitchEnd?: () => void;
   playOnChange?: boolean;
+  hovered?: boolean;
 }
 
 export default function GlitchText({
@@ -31,6 +32,7 @@ export default function GlitchText({
   autoPlayInterval,
   onGlitchEnd,
   playOnChange = false,
+  hovered = false,
 }: GlitchTextProps) {
   const containerRef = useRef<HTMLElement>(null);
   const activeTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -145,6 +147,20 @@ export default function GlitchText({
     if (!playOnChange) return;
     startGlitch(true);
   }, [playOnChange, startGlitch, text]);
+
+  useEffect(() => {
+    isHovered.current = hovered;
+    if (hovered) {
+      startGlitch(false);
+      return;
+    }
+
+    if (!keepPlayingOnLeave) {
+      clearAll();
+      restoreAll();
+      isAnimatingRef.current = false;
+    }
+  }, [hovered, startGlitch, clearAll, keepPlayingOnLeave, restoreAll]);
 
   useEffect(() => {
     return () => {
