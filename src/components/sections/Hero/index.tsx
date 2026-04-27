@@ -266,9 +266,9 @@ export default function Hero() {
 
           <p
             ref={sublineRef}
-            className="text-lg text-black/70 max-w-md mb-12"
+            className="text-lg text-black/100 max-w-md mb-20"
           >
-            Art direction & visual design
+            This is not just design
           </p>
 
           <div className="flex flex-col gap-4">
@@ -326,9 +326,9 @@ export default function Hero() {
           </h1>
 
           <p
-            className="text-lg text-black/70 max-w-md mb-12 ml-auto text-right"
+            className="text-lg text-black/100 max-w-md mb-20 ml-auto text-right"
           >
-            Art direction & visual design
+            this is leverage
           </p>
 
           <div className="ml-auto w-fit">
