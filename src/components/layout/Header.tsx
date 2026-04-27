@@ -119,9 +119,12 @@ export default function Header() {
         >
           <GlitchText
             text="IONA | TAKERU"
+            swapText="CODE & DESIGN"
             chars="イオナタケル武勇刃炎龍剣風雷影光"
             duration={35}
             iterations={4}
+            keepPlayingOnLeave
+            autoPlayInterval={12000}
           />
         </Link>
 
