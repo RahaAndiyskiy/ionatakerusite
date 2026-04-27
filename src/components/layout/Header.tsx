@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import Link from 'next/link';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { gsap } from '@/lib/gsap';
 import GlitchText from '@/components/ui/GlitchText';
 import useHoverTone from '@/hooks/useHoverTone';
@@ -11,20 +11,23 @@ import { useSound } from '@/context/SoundContext';
 const BRAND = '#6B1E23';
 
 const NAV_LINKS = [
-  { href: '/#work', label: 'Work' },
-  { href: '/#about', label: 'About' },
-  { href: '/#contact', label: 'Contact' },
+  { href: '#works', label: 'Works' },
+  { href: '#about', label: 'About' },
+  { href: '#contact', label: 'Contact' },
 ];
 
 // ─── компонент ───────────────────────────────────────────────
 export default function Header() {
   const menuOpenRef = useRef(false);
   const tlRef       = useRef<gsap.core.Timeline | null>(null);
+  const [worksActive, setWorksActive] = useState(false);
   const { muted, toggleMuted } = useSound();
 
   const playHoverTone = useHoverTone('/sounds/hover 1.wav');
   const playClickTone = useHoverTone('/sounds/Click 1.wav');
   const playMenuHoverTone = useHoverTone('/sounds/hoverMenuButtons.wav');
+
+  const headerColor = worksActive ? '#FFF3E6' : BRAND;
 
   // DOM refs
   const lineRef    = useRef<HTMLDivElement>(null);
@@ -39,6 +42,40 @@ export default function Header() {
     if (!navWrapRef.current) return;
     gsap.set(navWrapRef.current, { height: 0 });
     gsap.set(itemsRef.current.filter(Boolean), { opacity: 0, y: -8 });
+  }, []);
+
+  // ─── переключение цвета хедера для секции Works ─────────────────
+  useEffect(() => {
+    let observer: IntersectionObserver | null = null;
+    let frameId: number | null = null;
+
+    const observeWorksSection = () => {
+      const worksSection = document.getElementById('works');
+      if (!worksSection) {
+        frameId = window.requestAnimationFrame(observeWorksSection);
+        return;
+      }
+
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          setWorksActive(entry.isIntersecting && entry.intersectionRatio > 0.35);
+        },
+        {
+          root: null,
+          rootMargin: '0px 0px -60% 0px',
+          threshold: [0.35],
+        }
+      );
+
+      observer.observe(worksSection);
+    };
+
+    observeWorksSection();
+
+    return () => {
+      if (observer) observer.disconnect();
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+    };
   }, []);
 
   // ─── hover бургера ───────────────────────────────────────
@@ -97,9 +134,20 @@ export default function Header() {
     }
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleNavClick = (sectionId: string) => {
+    toggleMenu();
+    scrollToSection(sectionId);
+  };
+
   // ─── JSX ─────────────────────────────────────────────────
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
+    <header className="fixed top-0 left-0 right-0 z-50" style={{ '--header-color': headerColor } as React.CSSProperties}>
 
       {/* ── топ-бар ── */}
       <div className="px-6 md:px-16 py-6 flex items-center justify-between relative">
@@ -108,14 +156,14 @@ export default function Header() {
         <div
           ref={lineRef}
           className="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-1/3 h-px pointer-events-none"
-          style={{ backgroundColor: BRAND, opacity: 0.5 }}
+          style={{ backgroundColor: 'var(--header-color)', opacity: 0.5 }}
         />
 
         {/* лого */}
         <Link
           href="/"
           className="text-lg font-kiona tracking-[0.25em] uppercase relative z-10"
-          style={{ color: BRAND }}
+          style={{ color: 'var(--header-color)' }}
         >
           <GlitchText
             text="IONA | TAKERU"
@@ -139,8 +187,8 @@ export default function Header() {
             onMouseEnter={playHoverTone}
             onMouseLeave={playHoverTone}
             aria-label={muted ? 'Unmute sound' : 'Mute sound'}
-            className="group flex items-center justify-center w-10 h-10 border border-black/70 hover:border-black transition-colors flex-shrink-0"
-            style={{ color: BRAND }}
+            className="group flex items-center justify-center w-10 h-10 border transition-colors flex-shrink-0"
+            style={{ color: 'var(--header-color)', borderColor: 'var(--header-color)' }}
           >
             <span className="transition-transform duration-200 ease-in-out transform group-hover:scale-105 text-[0.55rem] font-kiona tracking-[0.22em] uppercase leading-none">
               {muted ? 'MUTE' : 'SND'}
@@ -150,8 +198,8 @@ export default function Header() {
           {/* CTA кнопка */}
           <Link
             href="/#contact"
-            className="group h-10 flex items-center overflow-hidden text-xs font-kiona tracking-[0.2em] uppercase border border-black/70 hover:border-black transition-colors px-6 relative"
-            style={{ color: BRAND }}
+            className="group h-10 flex items-center overflow-hidden text-xs font-kiona tracking-[0.2em] uppercase border transition-colors px-6 relative"
+            style={{ color: 'var(--header-color)', borderColor: 'var(--header-color)' }}
             onMouseEnter={playHoverTone}
             onMouseLeave={playHoverTone}
             onPointerDown={playClickTone}
@@ -169,12 +217,13 @@ export default function Header() {
             onClick={toggleMenu}
             onPointerDown={playClickTone}
             aria-label="Toggle menu"
-            className="group flex flex-col justify-center items-center gap-[6px] w-10 h-10 border border-black/70 hover:border-black transition-colors flex-shrink-0"
+            className="group flex flex-col justify-center items-center gap-[6px] w-10 h-10 border transition-colors flex-shrink-0"
+            style={{ borderColor: 'var(--header-color)' }}
             onMouseEnter={playHoverTone}
             onMouseLeave={playHoverTone}
           >
-            <span ref={bar1Ref} className="block w-5 h-px" style={{ backgroundColor: BRAND }} />
-            <span ref={bar2Ref} className="block w-5 h-px" style={{ backgroundColor: BRAND }} />
+            <span ref={bar1Ref} className="block w-5 h-px" style={{ backgroundColor: 'var(--header-color)' }} />
+            <span ref={bar2Ref} className="block w-5 h-px" style={{ backgroundColor: 'var(--header-color)' }} />
           </button>
         </div>
       </div>
@@ -183,17 +232,20 @@ export default function Header() {
       <div ref={navWrapRef} className="overflow-hidden" style={{ height: 0 }}>
         <nav className="px-6 md:px-16 pb-4 pt-1 flex flex-row items-center justify-center gap-12">
           {NAV_LINKS.map((link, i) => (
-            <Link
+            <a
               key={link.href}
               href={link.href}
               ref={el => { itemsRef.current[i] = el; }}
-              onClick={toggleMenu}
+              onClick={(event) => {
+                event.preventDefault();
+                handleNavClick(link.href.replace(/^#/, ''));
+              }}
               className="text-sm font-kiona tracking-[0.2em] uppercase transition-colors"
-              style={{ color: BRAND }}
+              style={{ color: 'var(--header-color)' }}
               onMouseEnter={playMenuHoverTone}
             >
               <GlitchText text={link.label} />
-            </Link>
+            </a>
           ))}
         </nav>
       </div>

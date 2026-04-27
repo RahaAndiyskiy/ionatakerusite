@@ -73,3 +73,11 @@ body {
   transform: translate(-50%, -50%) scale(2);
   background-color: rgba(107, 30, 35, 0.2);
 }
+
+.works-active .custom-cursor {
+  background-color: rgba(255, 243, 230, 0.9);
+}
+
+.works-active .cursor--active {
+  background-color: rgba(255, 243, 230, 0.35);
+}

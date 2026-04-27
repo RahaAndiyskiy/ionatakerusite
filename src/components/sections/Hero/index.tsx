@@ -219,6 +219,7 @@ export default function Hero() {
 
   return (
     <section
+      id="hero"
       ref={sectionRef}
       className="relative min-h-screen flex flex-col justify-end px-6 md:px-16 pb-24 md:pb-40 overflow-hidden"
     >
@@ -272,13 +273,20 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-col gap-4">
-            <Link
-              href="/#work"
+            <a
+              href="#works"
               className="group h-10 flex items-center overflow-hidden text-sm font-kiona tracking-[0.16em] uppercase border border-black/90 hover:border-black transition-colors px-8 relative w-fit"
               style={{ color: '#6B1E23' }}
               onMouseEnter={playHoverTone}
               onMouseLeave={playHoverTone}
               onPointerDown={playClickTone}
+              onClick={(event) => {
+                event.preventDefault();
+                const target = document.getElementById('works');
+                if (target) {
+                  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
             >
               <span className="transition-transform duration-[400ms] ease-in-out group-hover:translate-x-[1.8em] font-bold opacity-100 text-current">
                 WORKS
@@ -289,7 +297,7 @@ export default function Hero() {
               <span className="absolute left-6 transition-transform duration-[400ms] ease-in-out -translate-x-[400%] group-hover:translate-x-0" aria-hidden="true">
                 →
               </span>
-            </Link>
+            </a>
           </div>
         </div>
       </div>
