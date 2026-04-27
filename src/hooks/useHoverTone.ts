@@ -6,7 +6,7 @@ import { useSound } from '@/context/SoundContext';
 const DEFAULT_AUDIO_SRC = '/hover 1.wav';
 const BASE_RATE = 1.0;
 const RATE_VARIANCE = 0.05;
-const VOLUME = 0.8
+const VOLUME = 0.6
 
 export default function useHoverTone(audioSrc: string = DEFAULT_AUDIO_SRC) {
   const safeAudioSrc = encodeURI(audioSrc);

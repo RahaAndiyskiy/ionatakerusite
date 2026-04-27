@@ -134,10 +134,7 @@ export default function Header() {
           {/* кнопка звука */}
           <button
             type="button"
-            onClick={() => {
-              playClickTone();
-              toggleMuted();
-            }}
+            onClick={toggleMuted}
             onPointerDown={playClickTone}
             onMouseEnter={playHoverTone}
             onMouseLeave={playHoverTone}
@@ -145,7 +142,7 @@ export default function Header() {
             className="group flex items-center justify-center w-10 h-10 border border-black/70 hover:border-black transition-colors flex-shrink-0"
             style={{ color: BRAND }}
           >
-            <span className="text-[0.55rem] font-kiona tracking-[0.22em] uppercase leading-none">
+            <span className="transition-transform duration-200 ease-in-out transform group-hover:scale-105 text-[0.55rem] font-kiona tracking-[0.22em] uppercase leading-none">
               {muted ? 'MUTE' : 'SND'}
             </span>
           </button>

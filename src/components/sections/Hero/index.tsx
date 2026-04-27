@@ -280,7 +280,7 @@ export default function Hero() {
               onMouseLeave={playHoverTone}
               onPointerDown={playClickTone}
             >
-              <span className="transition-transform duration-[400ms] ease-in-out group-hover:translate-x-[1.8em] font-medium text-current">
+              <span className="transition-transform duration-[400ms] ease-in-out group-hover:translate-x-[1.8em] font-bold opacity-100 text-current">
                 WORKS
               </span>
               <span className="ml-2 transition-transform duration-[400ms] ease-in-out group-hover:translate-x-[400%]" aria-hidden="true">
@@ -318,7 +318,7 @@ export default function Hero() {
                 HITS
               </span>
               <span
-                className="block text-[clamp(1.8rem,5.2vw,4.8rem)] font-light uppercase opacity-80 mt-1 text-right"
+                className="block text-[clamp(2rem,6vw,5.8rem)] font-light uppercase opacity-80 mt-1 text-right"
               >
                  .different
               </span>
@@ -343,7 +343,7 @@ export default function Hero() {
               <span className="absolute left-8 transition-transform duration-[400ms] ease-in-out translate-x-0 group-hover:-translate-x-[400%]" aria-hidden="true">
                 ←
               </span>
-              <span className="ml-4 transition-transform duration-[400ms] ease-in-out group-hover:-translate-x-[1.8em] font-medium text-current">
+              <span className="ml-4 transition-transform duration-[400ms] ease-in-out group-hover:-translate-x-[1.8em] font-bold opacity-100 text-current">
                 ABOUT ME
               </span>
               <span className="absolute right-8 transition-transform duration-[400ms] ease-in-out translate-x-[400%] group-hover:translate-x-0" aria-hidden="true">
