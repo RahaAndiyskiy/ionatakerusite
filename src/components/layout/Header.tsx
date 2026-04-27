@@ -8,7 +8,7 @@ import useHoverTone from '@/hooks/useHoverTone';
 import { useSound } from '@/context/SoundContext';
 
 // ─── константы ───────────────────────────────────────────────
-const BRAND = '#6B1E23';
+
 
 const NAV_LINKS = [
   { href: '#works', label: 'Works' },
@@ -27,7 +27,7 @@ export default function Header() {
   const playClickTone = useHoverTone('/sounds/Click 1.wav');
   const playMenuHoverTone = useHoverTone('/sounds/hoverMenuButtons.wav');
 
-  const headerColor = worksActive ? '#FFF3E6' : BRAND;
+  const headerColor = worksActive ? '#FFF3E6' : 'rgba(107, 30, 35, 0.8)';
 
   // DOM refs
   const lineRef    = useRef<HTMLDivElement>(null);

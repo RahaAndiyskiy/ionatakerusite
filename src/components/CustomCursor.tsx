@@ -11,6 +11,7 @@ export default function CustomCursor() {
   const rafRef = useRef<number | null>(null);
   const worksActiveRef = useRef(false);
 
+  
   useEffect(() => {
     const cursor = cursorRef.current;
     if (!cursor) return;

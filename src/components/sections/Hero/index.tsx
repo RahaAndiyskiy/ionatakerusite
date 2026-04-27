@@ -257,7 +257,7 @@ export default function Hero() {
             </span>
 
             <span className="block text-[clamp(4rem,13vw,14rem)] font-black leading-none uppercase">
-              TRENDS<span style={{ color: '#6B1E23' }}>.</span>
+              TRENDS<span style={{ color: `rgba(107, 30, 35, 0.8)` }}>.</span>
             </span>
 
             <span className="block text-[clamp(1.4rem,2.6vw,2.8rem)] font-light uppercase opacity-80 mt-2">
@@ -276,7 +276,7 @@ export default function Hero() {
             <a
               href="#works"
               className="group h-10 flex items-center overflow-hidden text-sm font-kiona tracking-[0.16em] uppercase border border-black/90 hover:border-black transition-colors px-8 relative w-fit"
-              style={{ color: '#6B1E23' }}
+              style={{ color: `rgba(107, 30, 35, 0.8)` }}
               onMouseEnter={playHoverTone}
               onMouseLeave={playHoverTone}
               onPointerDown={playClickTone}
@@ -317,7 +317,7 @@ export default function Hero() {
 
             {/* IT — левая колонка */}
             <span className="text-[clamp(4rem,13vw,14rem)] font-black leading-none uppercase pr-[0.22em]">
-              <span style={{ color: '#6B1E23' }}>.</span>IT
+              <span style={{ color: `rgba(107, 30, 35, 0.8)` }}>.</span>IT
             </span>
 
             {/* HITS + different. — правая колонка */}
@@ -343,7 +343,7 @@ export default function Hero() {
             <Link
               href="/#about"
               className="group h-10 flex items-center overflow-hidden text-sm font-kiona tracking-[0.16em] uppercase border border-black/90 hover:border-black transition-colors px-10 relative"
-              style={{ color: '#6B1E23' }}
+              style={{ color: `rgba(107, 30, 35, 0.8)` }}
               onMouseEnter={playHoverTone}
               onMouseLeave={playHoverTone}
               onPointerDown={playClickTone}
