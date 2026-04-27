@@ -1,31 +1,36 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useWorksActive } from '@/context/WorkSectionContext';
 
 export default function CustomCursor() {
+  const worksActive = useWorksActive();
   const cursorRef = useRef<HTMLDivElement | null>(null);
   const targetX = useRef(0);
   const targetY = useRef(0);
   const currentX = useRef(0);
   const currentY = useRef(0);
   const rafRef = useRef<number | null>(null);
-  const worksActiveRef = useRef(false);
 
-  
+  const worksActiveRef = useRef(worksActive);
+
+  const getCursorColor = (isActive: boolean, activeSection: boolean) => {
+    if (activeSection) {
+      return isActive ? 'rgba(255, 243, 230, 0.35)' : 'rgba(255, 243, 230, 0.9)';
+    }
+    return isActive ? 'rgba(107, 30, 35, 0.2)' : 'rgba(107, 30, 35, 0.8)';
+  };
+
+  useEffect(() => {
+    worksActiveRef.current = worksActive;
+  }, [worksActive]);
+
   useEffect(() => {
     const cursor = cursorRef.current;
     if (!cursor) return;
 
     const updateCursorColor = (isActive: boolean) => {
-      if (worksActiveRef.current) {
-        cursor.style.backgroundColor = isActive
-          ? 'rgba(255, 243, 230, 0.35)'
-          : 'rgba(255, 243, 230, 0.9)';
-      } else {
-        cursor.style.backgroundColor = isActive
-          ? 'rgba(107, 30, 35, 0.2)'
-          : 'rgba(107, 30, 35, 0.8)';
-      }
+      cursor.style.backgroundColor = getCursorColor(isActive, worksActiveRef.current);
     };
 
     const onMouseMove = (event: MouseEvent) => {
@@ -37,33 +42,7 @@ export default function CustomCursor() {
       updateCursorColor(isActive);
     };
 
-    const updateWorksState = (isActive: boolean) => {
-      worksActiveRef.current = isActive;
-      const isCursorActive = cursor.classList.contains('cursor--active');
-      updateCursorColor(isCursorActive);
-    };
-
-    const observeWorksSection = () => {
-      const worksSection = document.getElementById('works');
-      if (!worksSection) return;
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          updateWorksState(entry.isIntersecting && entry.intersectionRatio > 0.35);
-        },
-        {
-          root: null,
-          rootMargin: '0px 0px -60% 0px',
-          threshold: [0.35],
-        }
-      );
-
-      observer.observe(worksSection);
-      return observer;
-    };
-
-    const observer = observeWorksSection();
-    updateCursorColor(false);
+    const initialColor = () => updateCursorColor(false);
 
     const animate = () => {
       currentX.current += (targetX.current - currentX.current) * 0.05;
@@ -73,17 +52,24 @@ export default function CustomCursor() {
       rafRef.current = requestAnimationFrame(animate);
     };
 
+    initialColor();
     window.addEventListener('mousemove', onMouseMove);
     rafRef.current = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
-      if (observer) observer.disconnect();
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
     };
   }, []);
+
+  useEffect(() => {
+    const cursor = cursorRef.current;
+    if (!cursor) return;
+    const isActive = cursor.classList.contains('cursor--active');
+    cursor.style.backgroundColor = getCursorColor(isActive, worksActive);
+  }, [worksActive]);
 
   return <div ref={cursorRef} className="custom-cursor" />;
 }

@@ -4,8 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
-import { SoundProvider } from "@/context/SoundContext";
-
+import { SoundProvider } from "@/context/SoundContext";import { WorkSectionProvider } from '@/context/WorkSectionContext';
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,9 +25,11 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-[#0a0a0a] text-black">
         <SoundProvider>
-          <CustomCursor />
-          <Header />
-          <SmoothScroll>{children}</SmoothScroll>
+          <WorkSectionProvider>
+            <CustomCursor />
+            <Header />
+            <SmoothScroll>{children}</SmoothScroll>
+          </WorkSectionProvider>
         </SoundProvider>
       </body>
     </html>

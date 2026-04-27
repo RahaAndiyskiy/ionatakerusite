@@ -1,11 +1,12 @@
 ﻿'use client';
 
 import Link from 'next/link';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { gsap } from '@/lib/gsap';
 import GlitchText from '@/components/ui/GlitchText';
 import useHoverTone from '@/hooks/useHoverTone';
 import { useSound } from '@/context/SoundContext';
+import { useWorksActive } from '@/context/WorkSectionContext';
 
 // ─── константы ───────────────────────────────────────────────
 
@@ -20,7 +21,7 @@ const NAV_LINKS = [
 export default function Header() {
   const menuOpenRef = useRef(false);
   const tlRef       = useRef<gsap.core.Timeline | null>(null);
-  const [worksActive, setWorksActive] = useState(false);
+  const worksActive = useWorksActive();
   const { muted, toggleMuted } = useSound();
 
   const playHoverTone = useHoverTone('/sounds/hover 1.wav');
@@ -42,40 +43,6 @@ export default function Header() {
     if (!navWrapRef.current) return;
     gsap.set(navWrapRef.current, { height: 0 });
     gsap.set(itemsRef.current.filter(Boolean), { opacity: 0, y: -8 });
-  }, []);
-
-  // ─── переключение цвета хедера для секции Works ─────────────────
-  useEffect(() => {
-    let observer: IntersectionObserver | null = null;
-    let frameId: number | null = null;
-
-    const observeWorksSection = () => {
-      const worksSection = document.getElementById('works');
-      if (!worksSection) {
-        frameId = window.requestAnimationFrame(observeWorksSection);
-        return;
-      }
-
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          setWorksActive(entry.isIntersecting && entry.intersectionRatio > 0.35);
-        },
-        {
-          root: null,
-          rootMargin: '0px 0px -60% 0px',
-          threshold: [0.35],
-        }
-      );
-
-      observer.observe(worksSection);
-    };
-
-    observeWorksSection();
-
-    return () => {
-      if (observer) observer.disconnect();
-      if (frameId !== null) window.cancelAnimationFrame(frameId);
-    };
   }, []);
 
   // ─── hover бургера ───────────────────────────────────────

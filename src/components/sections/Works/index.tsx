@@ -1,12 +1,22 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { ScrollTrigger } from '@/lib/gsap';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
+import { useSetWorksActive } from '@/context/WorkSectionContext';
 
 export default function Works() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const animationFrameRef = useRef<number | null>(null);
+  const setWorksActive = useSetWorksActive();
+
+  const works = [
+    { id: '01', title: 'OBISIDIAN', type: 'WEB DESIGN', image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80' },
+    { id: '02', title: 'SOLEIL', type: 'BRAND SYSTEM', image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80' },
+    { id: '03', title: 'AETHER', type: 'INTERFACE', image: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=1200&q=80' },
+    { id: '04', title: 'VORTEX', type: 'DIGITAL CAMPAIGN', image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80' },
+  ];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -27,8 +37,9 @@ export default function Works() {
 
     const progressRef = { current: 0 };
     let beamOffset = 0;
+    let beamDirection = 0.35;
     let currentBeamAlpha = 0.05;
-    let currentBeamWidth = 0.65;
+    let currentBeamWidth = 0.55;
     let currentBeamHeight = 0.75;
     let currentParticleCount = 40;
     let currentParticleAlphaFactor = 1;
@@ -48,7 +59,7 @@ export default function Works() {
       const rawProgress = progressRef.current;
       const phase = clamp(rawProgress / 0.7, 0, 1);
       const targetBeamAlpha = lerp(0.05, 0.18, phase);
-      const targetBeamWidth = lerp(0.65, 0.95, phase);
+      const targetBeamWidth = lerp(0.55, 0.85, phase);
       const targetBeamHeight = lerp(0.75, 1.1, phase);
       const targetParticleCount = lerp(40, 120, phase);
       const targetParticleAlphaFactor = lerp(1, 1.8, phase);
@@ -84,8 +95,11 @@ export default function Works() {
         context.fill();
       }
 
-      beamOffset += 0.5;
-      const baseX = (beamOffset % (canvas.width * 1.25)) - canvas.width * 0.2;
+      beamOffset += beamDirection;
+      if (beamOffset > canvas.width * 0.5 || beamOffset < -canvas.width * 0.3) {
+        beamDirection *= -1;
+      }
+      const baseX = beamOffset;
       const offsetX = baseX + rawProgress * canvas.width * 0.3;
       const offsetY = -canvas.height * 0.15;
       const gradient = context.createLinearGradient(
@@ -96,28 +110,99 @@ export default function Works() {
       );
 
       gradient.addColorStop(0, 'rgba(255, 255, 255, 0)');
-      gradient.addColorStop(0.18, `rgba(255, 255, 255, ${currentBeamAlpha * 0.5})`);
-      gradient.addColorStop(0.32, `rgba(255, 255, 255, ${currentBeamAlpha * 0.9})`);
-      gradient.addColorStop(0.45, `rgba(255, 255, 255, ${currentBeamAlpha})`);
-      gradient.addColorStop(0.55, `rgba(255, 255, 255, ${currentBeamAlpha * 0.9})`);
-      gradient.addColorStop(0.68, `rgba(255, 255, 255, ${currentBeamAlpha * 0.45})`);
+      gradient.addColorStop(0.22, `rgba(255, 255, 255, ${currentBeamAlpha * 0.35})`);
+      gradient.addColorStop(0.38, `rgba(255, 255, 255, ${currentBeamAlpha * 0.72})`);
+      gradient.addColorStop(0.5, `rgba(255, 255, 255, ${currentBeamAlpha})`);
+      gradient.addColorStop(0.62, `rgba(255, 255, 255, ${currentBeamAlpha * 0.72})`);
+      gradient.addColorStop(0.78, `rgba(255, 255, 255, ${currentBeamAlpha * 0.3})`);
       gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
       context.fillStyle = gradient;
       context.fillRect(0, 0, canvas.width, canvas.height);
 
+      // chromatic aberration edges: delicate color on both sides
+      context.globalCompositeOperation = 'lighter';
+
+      const edgeShift = 10;
+      const edgeWidth = canvas.width * 0.25;
+      const leftGradient = context.createLinearGradient(
+        offsetX - edgeShift,
+        offsetY,
+        offsetX - edgeShift + edgeWidth,
+        offsetY + canvas.height * currentBeamHeight
+      );
+      leftGradient.addColorStop(0, 'rgba(221, 160, 221, 0)');
+      leftGradient.addColorStop(0.3, 'rgba(221, 160, 221, 0.05)');
+      leftGradient.addColorStop(0.45, 'rgba(221, 160, 221, 0.08)');
+      leftGradient.addColorStop(0.55, 'rgba(221, 160, 221, 0.05)');
+      leftGradient.addColorStop(1, 'rgba(221, 160, 221, 0)');
+      context.fillStyle = leftGradient;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      const rightGradient = context.createLinearGradient(
+        offsetX + edgeShift,
+        offsetY,
+        offsetX + edgeShift + edgeWidth,
+        offsetY + canvas.height * currentBeamHeight
+      );
+      rightGradient.addColorStop(0, 'rgba(135, 206, 255, 0)');
+      rightGradient.addColorStop(0.3, 'rgba(135, 206, 255, 0.05)');
+      rightGradient.addColorStop(0.45, 'rgba(135, 206, 255, 0.08)');
+      rightGradient.addColorStop(0.55, 'rgba(135, 206, 255, 0.05)');
+      rightGradient.addColorStop(1, 'rgba(135, 206, 255, 0)');
+      context.fillStyle = rightGradient;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      context.globalCompositeOperation = 'source-over';
+
       animationFrameRef.current = window.requestAnimationFrame(drawFrame);
+    };
+
+    let worksIsActive = false;
+    const updateWorksActive = (active: boolean) => {
+      if (worksIsActive === active) return;
+      worksIsActive = active;
+      setWorksActive(active);
     };
 
     const scrollTrigger = ScrollTrigger.create({
       trigger: section,
-      start: 'top bottom',
+      start: 'top top',
       end: 'bottom top',
+      pin: true,
       scrub: true,
       onUpdate: (self) => {
         progressRef.current = self.progress;
       },
     });
+
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        updateWorksActive(entry.isIntersecting && entry.intersectionRatio > 0.05);
+      },
+      {
+        root: null,
+        rootMargin: '0px 0px -30% 0px',
+        threshold: [0.05, 0.15, 0.4],
+      }
+    );
+    visibilityObserver.observe(section);
+
+    if (rowRefs.current.length) {
+      gsap.from(rowRefs.current.filter(Boolean), {
+        scrollTrigger: {
+          trigger: section,
+          start: 'top bottom',
+          end: 'top center',
+          toggleActions: 'play none none none',
+        },
+        opacity: 0,
+        x: 60,
+        duration: 0.75,
+        ease: 'power2.out',
+        stagger: 0.18,
+      });
+    }
 
     setSize();
     drawFrame();
@@ -134,9 +219,13 @@ export default function Works() {
       if (animationFrameRef.current !== null) {
         window.cancelAnimationFrame(animationFrameRef.current);
       }
+      visibilityObserver.disconnect();
       scrollTrigger.kill();
+      setWorksActive(false);
     };
-  }, []);
+  }, [setWorksActive]);
+
+  rowRefs.current = [];
 
   return (
     <section ref={sectionRef} id="works" className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#111111] to-[#181818]">
@@ -151,6 +240,37 @@ export default function Works() {
           <h2 className="text-[clamp(2.5rem,6vw,5.5rem)] font-light uppercase tracking-[-0.04em] text-[#FFF3E6]">
             SELECTED WORK
           </h2>
+        </div>
+
+        <div className="mt-14 space-y-5">
+          { [works.slice(0, 2), works.slice(2, 4)].map((row, rowIndex) => (
+            <div
+              key={rowIndex}
+              ref={(el) => { rowRefs.current[rowIndex] = el; }}
+              className="grid gap-5 sm:grid-cols-2"
+            >
+              {row.map((project) => (
+                <article
+                  key={project.id}
+                  className="group overflow-hidden bg-transparent transition-transform duration-300 ease-out will-change-transform hover:scale-[1.03]"
+                >
+                  <div className="h-[320px] overflow-hidden">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+
+                  <div className="mt-4 text-sm uppercase tracking-[0.22em] text-white/80">
+                    <span className="text-white font-semibold">{project.id}</span>
+                    <span className="mx-3 text-white">{project.title}</span>
+                    <span className="text-white/50">/ {project.type}</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </section>
