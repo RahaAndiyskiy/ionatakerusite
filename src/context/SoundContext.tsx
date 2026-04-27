@@ -10,10 +10,20 @@ type SoundContextValue = {
 const SoundContext = createContext<SoundContextValue | null>(null);
 
 export function SoundProvider({ children }: { children: ReactNode }) {
-  const [muted, setMuted] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.localStorage.getItem('sound-muted') === 'true';
-  });
+  const [muted, setMuted] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const frame = requestAnimationFrame(() => {
+      const stored = window.localStorage.getItem('sound-muted');
+      if (stored !== null) {
+        setMuted(stored === 'true');
+      }
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

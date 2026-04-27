@@ -104,7 +104,8 @@ export default function Hero() {
           titleMaskRef.current.style.maskImage =
             `linear-gradient(to left, transparent 0%, transparent calc(${maskProgress * 100}% - 24px), black calc(${maskProgress * 100}% + 2px), black 100%)`;
           titleMaskRef.current.style.maskMode = 'alpha';
-          titleMaskRef.current.style.filter = `blur(${maskProgress < 0.9 ? maskProgress * 1.5 : 0}px)`;
+          const blurAmount = maskProgress > 0.15 ? Math.min(5, Math.max(1.2, (maskProgress - 0.15) * 4.5)) : 0;
+          titleMaskRef.current.style.filter = `blur(${blurAmount}px)`;
         }
 
         if (newTitleContainerRef.current) {
@@ -142,10 +143,10 @@ export default function Hero() {
 
       const clamp = (v: number) => Math.max(-1, Math.min(1, v));
 
-      target.textX = clamp(x) * 2;
-      target.textY = clamp(y) * 2;
-      target.bgX   = -clamp(x) * 10;
-      target.bgY   = -clamp(y) * 6;
+      target.textX = clamp(x) * 1.2;
+      target.textY = clamp(y) * 1.2;
+      target.bgX   = -clamp(x) * 2;
+      target.bgY   = -clamp(y) * 2;
 
       if (!frame) frame = requestAnimationFrame(update);
     };
@@ -250,7 +251,7 @@ export default function Hero() {
             ref={headlineRef}
             className="font-kiona tracking-tight leading-[0.85] text-black mb-8 w-fit"
           >
-            <span className="block text-[clamp(1.8rem,5.2vw,4.8rem)] font-light uppercase opacity-60">
+            <span className="block text-[clamp(2rem,5.6vw,5.2rem)] font-light uppercase opacity-80">
               i create
             </span>
 
@@ -258,7 +259,7 @@ export default function Hero() {
               TRENDS<span style={{ color: '#6B1E23' }}>.</span>
             </span>
 
-            <span className="block text-[clamp(1rem,2.4vw,2.2rem)] font-light uppercase opacity-50 mt-2">
+            <span className="block text-[clamp(1.4rem,2.6vw,2.8rem)] font-light uppercase opacity-80 mt-2">
               not follow them.
             </span>
           </h1>
@@ -273,14 +274,14 @@ export default function Hero() {
           <div className="flex flex-col gap-4">
             <Link
               href="/#work"
-              className="group h-10 flex items-center overflow-hidden text-xs font-kiona tracking-[0.2em] uppercase border border-black/70 hover:border-black transition-colors px-6 relative w-fit"
+              className="group h-10 flex items-center overflow-hidden text-sm font-kiona tracking-[0.16em] uppercase border border-black/90 hover:border-black transition-colors px-8 relative w-fit"
               style={{ color: '#6B1E23' }}
               onMouseEnter={playHoverTone}
               onMouseLeave={playHoverTone}
               onPointerDown={playClickTone}
             >
-              <span className="transition-transform duration-[400ms] ease-in-out group-hover:translate-x-[1.8em]">
-                WORS
+              <span className="transition-transform duration-[400ms] ease-in-out group-hover:translate-x-[1.8em] font-medium text-current">
+                WORKS
               </span>
               <span className="ml-2 transition-transform duration-[400ms] ease-in-out group-hover:translate-x-[400%]" aria-hidden="true">
                 →
@@ -302,7 +303,7 @@ export default function Hero() {
             className="font-kiona tracking-tight leading-[0.85] text-black mb-8 ml-auto w-fit grid grid-cols-[auto_auto] items-baseline"
           >
             {/* верхняя строка — на всю ширину IT HITS. */}
-            <span className="col-span-2 block text-[clamp(1rem,2.4vw,2.2rem)] font-light uppercase opacity-50 mb-2 text-right w-full">
+            <span className="col-span-2 block text-[clamp(1rem,2.4vw,2.2rem)] font-light uppercase opacity-80 mb-2 text-right w-full">
               it doesn&apos;t just look expensive.
             </span>
 
@@ -317,7 +318,7 @@ export default function Hero() {
                 HITS
               </span>
               <span
-                className="block text-[clamp(1.8rem,5.2vw,4.8rem)] font-light uppercase opacity-60 mt-1 text-right"
+                className="block text-[clamp(1.8rem,5.2vw,4.8rem)] font-light uppercase opacity-80 mt-1 text-right"
               >
                  .different
               </span>
@@ -333,7 +334,7 @@ export default function Hero() {
           <div className="ml-auto w-fit">
             <Link
               href="/#about"
-              className="group h-10 flex items-center overflow-hidden text-xs font-kiona tracking-[0.2em] uppercase border border-black/70 hover:border-black transition-colors px-10 relative"
+              className="group h-10 flex items-center overflow-hidden text-sm font-kiona tracking-[0.16em] uppercase border border-black/90 hover:border-black transition-colors px-10 relative"
               style={{ color: '#6B1E23' }}
               onMouseEnter={playHoverTone}
               onMouseLeave={playHoverTone}
@@ -342,7 +343,7 @@ export default function Hero() {
               <span className="absolute left-8 transition-transform duration-[400ms] ease-in-out translate-x-0 group-hover:-translate-x-[400%]" aria-hidden="true">
                 ←
               </span>
-              <span className="ml-4 transition-transform duration-[400ms] ease-in-out group-hover:-translate-x-[1.8em]">
+              <span className="ml-4 transition-transform duration-[400ms] ease-in-out group-hover:-translate-x-[1.8em] font-medium text-current">
                 ABOUT ME
               </span>
               <span className="absolute right-8 transition-transform duration-[400ms] ease-in-out translate-x-[400%] group-hover:translate-x-0" aria-hidden="true">
