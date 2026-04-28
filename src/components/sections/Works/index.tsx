@@ -43,10 +43,13 @@ export default function Works() {
     const particles = Array.from({ length: 120 }, () => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      size: 0.5 + Math.random() * 1.5,
-      speed: 0.15 + Math.random() * 0.45,
-      alpha: 0.08 + Math.random() * 0.25,
+      size: 0.4 + Math.random() * 1.8,
+      speed: 0.03 + Math.random() * 0.1,
+      alpha: 0.05 + Math.random() * 0.24,
       drift: Math.random() * Math.PI * 2,
+      vx: (Math.random() - 0.5) * 0.08,
+      vy: (Math.random() - 0.5) * 0.08,
+      phase: Math.random() * Math.PI * 2,
     }));
 
     const progressRef = { current: 0 };
@@ -90,17 +93,16 @@ export default function Works() {
 
       for (let i = 0; i < activeCount; i += 1) {
         const particle = particles[i];
-        particle.y += particle.speed * currentParticleSpeedFactor;
-        particle.drift += 0.002;
-        particle.x += Math.sin(particle.drift) * 0.2;
+        particle.drift += 0.0018;
+        particle.phase += 0.003;
 
-        if (particle.y - particle.size > canvas.height) {
-          particle.y = -particle.size;
-          particle.x = Math.random() * canvas.width;
-        }
+        particle.x += particle.vx * particle.speed * currentParticleSpeedFactor + Math.cos(particle.drift) * 0.14;
+        particle.y += particle.vy * particle.speed * currentParticleSpeedFactor + Math.sin(particle.phase) * 0.08;
 
-        if (particle.x < -10) particle.x = canvas.width + 10;
-        if (particle.x > canvas.width + 10) particle.x = -10;
+        if (particle.x < -20) particle.x = canvas.width + 20;
+        if (particle.x > canvas.width + 20) particle.x = -20;
+        if (particle.y < -20) particle.y = canvas.height + 20;
+        if (particle.y > canvas.height + 20) particle.y = -20;
 
         context.beginPath();
         const alpha = clamp(particle.alpha * currentParticleAlphaFactor, 0, 0.45);
