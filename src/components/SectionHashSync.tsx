@@ -35,11 +35,7 @@ export default function SectionHashSync() {
         if (!bestEntry) return;
 
         const sectionId = bestEntry.target.id;
-        if (sectionId === 'hero') {
-          updateHash(null);
-        } else {
-          updateHash(sectionId);
-        }
+        updateHash(sectionId);
       },
       {
         root: null,
