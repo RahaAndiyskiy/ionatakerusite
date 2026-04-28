@@ -2,9 +2,16 @@
 
 import Link from 'next/link';
 import { useRef, useEffect } from 'react';
+import { Space_Mono } from 'next/font/google';
 import { useGSAP } from '@gsap/react';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
 import useHoverTone from '@/hooks/useHoverTone';
+
+const spaceMono = Space_Mono({
+  subsets: ['latin'],
+  weight: ['400'],
+  display: 'swap',
+});
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -267,7 +274,7 @@ export default function Hero() {
 
           <p
             ref={sublineRef}
-            className="text-lg text-black/100 max-w-md mb-20"
+            className={`text-lg text-black/100 max-w-md mb-20 ${spaceMono.className}`}
           >
             This is not just design
           </p>
@@ -334,7 +341,7 @@ export default function Hero() {
           </h1>
 
           <p
-            className="text-lg text-black/100 max-w-md mb-20 ml-auto text-right"
+            className={`text-lg text-black/100 max-w-md mb-20 ml-auto text-right ${spaceMono.className}`}
           >
             this is leverage
           </p>

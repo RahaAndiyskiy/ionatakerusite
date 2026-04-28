@@ -280,16 +280,16 @@ export default function Works() {
             </h2>
           </div>
 
-          <div className="mt-16 max-w-md text-base leading-9 text-[#FFF3E6]/20 lg:absolute lg:right-18 lg:top-0 lg:text-left works-copy">
+          <div className="mt-16 max-w-lg text-base leading-9 text-[#FFF3E6]/20 lg:absolute lg:right-0 lg:top-0 lg:mt-8 lg:text-left works-copy">
             <div className="space-y-7">
               {sectionCopyGroups.map((group, groupIndex) => (
                 <div key={groupIndex} className="space-y-1">
                   {group.map((line, lineIndex) => (
-                    <p key={lineIndex} className="flex flex-wrap justify-start gap-x-2 gap-y-2 text-[1.1rem] leading-[1.45]">
+                    <p key={lineIndex} className="flex flex-wrap justify-start gap-x-2 gap-y-2 text-[1.5rem] leading-[1.45]">
                       {line.split(' ').map((word, wordIndex) => (
                         <span
                           key={wordIndex}
-                          className="word inline-block font-medium"
+                          className={`word inline-block font-medium ${shareTechMono.className}`}
                           style={{ color: 'rgba(255, 243, 230, 0.05)' }}
                         >
                           {word}
